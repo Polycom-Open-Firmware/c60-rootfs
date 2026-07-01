@@ -132,7 +132,7 @@ if [[ -d "$FW_SRC" ]]; then
     # name the chip comes up without board cal and an iw scan hard-hangs the SoC.
     # Same content as the generic .txt, staged under the board-specific name.
     [[ -f "$FW_SRC/brcm/brcmfmac4356-pcie.txt" ]] && install -m 0644 "$FW_SRC/brcm/brcmfmac4356-pcie.txt" "$ROOTFS/lib/firmware/brcm/brcmfmac4356-pcie.poly,kepler-proto1.txt"
-    [[ -f "$FW_SRC/sdma-imx7d.bin" ]] && install -m 0644 "$FW_SRC/sdma-imx7d.bin" "$ROOTFS/lib/firmware/imx/sdma/sdma-imx7d.bin"
+    [[ -f "$FW_SRC/imx/sdma/sdma-imx7d.bin" ]] && install -m 0644 "$FW_SRC/imx/sdma/sdma-imx7d.bin" "$ROOTFS/lib/firmware/imx/sdma/sdma-imx7d.bin"
     # Bluetooth patchram for the BCM4356 / CYW4354A2 combo. Unlike the WiFi
     # blobs this is not embedded via CONFIG_EXTRA_FIRMWARE, so hci_bcm loads it
     # from the rootfs at runtime. The driver derives the request name from the
@@ -148,6 +148,8 @@ fi
 cat > "$ROOTFS/etc/c60-version" <<VER
 # c60-firmware version metadata. Sourceable as shell.
 C60_FW_VERSION="${C60_FW_VERSION:-standalone}"
+C60_ROOTFS_VERSION="${C60_ROOTFS_VERSION:-$(git describe --tags --always --dirty 2>/dev/null || echo standalone)}"
+C60_PATCHES_VERSION="${C60_PATCHES_VERSION:-unknown}"
 C60_BUILD_DATE="${C60_BUILD_DATE:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
 C60_BUILD_HOST="${C60_BUILD_HOST:-$(hostname)}"
 VER
