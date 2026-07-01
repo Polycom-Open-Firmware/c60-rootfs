@@ -117,8 +117,8 @@ rsync -a "$ROOT_DIR/etc/" "$ROOTFS/etc/"
 # 4b. WiFi firmware (BCM4356 + companion blobs) into /lib/firmware/brcm/.
 # Mirrors what kernel-side CONFIG_EXTRA_FIRMWARE already embeds — having
 # them in the rootfs too means udev paths + post-boot module reloads work,
-# and brcmfmac4356-pcie.poly,kepler-proto1.txt would Just Work if we ever
-# create a board-specific NVRAM variant. NXP SDMA blob also staged here
+# and the board-specific brcmfmac4356-pcie.poly,kepler-proto1.txt (staged below)
+# is the name the driver actually requests. NXP SDMA blob also staged here
 # so audio doesn't dmesg-warn "Direct firmware load ... -2".
 FW_SRC="$ROOT_DIR/../firmware-blobs"
 if [[ -d "$FW_SRC" ]]; then
@@ -127,6 +127,11 @@ if [[ -d "$FW_SRC" ]]; then
     for blob in brcmfmac4356-pcie.bin brcmfmac4356-pcie.clm_blob brcmfmac4356-pcie.txt; do
         [[ -f "$FW_SRC/$blob" ]] && install -m 0644 "$FW_SRC/$blob" "$ROOTFS/lib/firmware/brcm/$blob"
     done
+    # brcmfmac derives the NVRAM name from the root compatible ("poly,kepler-proto1")
+    # and requests brcmfmac4356-pcie.poly,kepler-proto1.txt first; without that exact
+    # name the chip comes up without board cal and an iw scan hard-hangs the SoC.
+    # Same content as the generic .txt, staged under the board-specific name.
+    [[ -f "$FW_SRC/brcmfmac4356-pcie.txt" ]] && install -m 0644 "$FW_SRC/brcmfmac4356-pcie.txt" "$ROOTFS/lib/firmware/brcm/brcmfmac4356-pcie.poly,kepler-proto1.txt"
     [[ -f "$FW_SRC/sdma-imx7d.bin" ]] && install -m 0644 "$FW_SRC/sdma-imx7d.bin" "$ROOTFS/lib/firmware/imx/sdma/sdma-imx7d.bin"
 fi
 
