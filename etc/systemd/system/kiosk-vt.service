@@ -1,0 +1,11 @@
+[Unit]
+Description=Force VT switch to tty7 for kiosk
+Before=kiosk.service
+After=systemd-vconsole-setup.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/busybox chvt 7
+
+[Install]
+WantedBy=graphical.target

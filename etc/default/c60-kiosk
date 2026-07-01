@@ -1,0 +1,5 @@
+KIOSK_URL=file:///etc/c60-kiosk/touchtest.html
+# Leave --platform out so cog defaults to its FDO platform under cage; that's
+# the path that honors COG_PLATFORM_FDO_VIEW_FULLSCREEN=1. --platform=wl
+# would make cog open a regular Wayland window and ignore the fullscreen env.
+COG_OPTS="--enable-media=true"

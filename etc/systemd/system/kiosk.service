@@ -1,0 +1,37 @@
+[Unit]
+Description=C60 fullscreen kiosk (cage + cog)
+After=systemd-user-sessions.service seatd.service kiosk-config.service
+Wants=seatd.service kiosk-config.service
+ConditionPathExists=/dev/dri/card0
+
+[Service]
+Type=simple
+User=kiosk
+Group=kiosk
+PAMName=login
+TTYPath=/dev/tty7
+TTYReset=no
+TTYVHangup=no
+StandardInput=tty
+StandardOutput=journal
+StandardError=journal
+EnvironmentFile=-/etc/default/c60-kiosk
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=XDG_SEAT=seat0
+Environment=HOME=/home/kiosk
+Environment=XDG_SESSION_TYPE=wayland
+Environment=XDG_CACHE_HOME=/var/cache/c60-kiosk
+Environment=XDG_DATA_HOME=/var/lib/c60-kiosk
+Environment=COG_PLATFORM_FDO_VIEW_FULLSCREEN=1
+# Display DRM node and output rotation are panel-specific and stay unset
+# until the C60 DSI display is active (see README "Known limitations").
+# Once it is, point wlroots at the display node and add cage's -r rotation
+# flag to the ExecStart below, e.g.:
+#   Environment=WLR_DRM_DEVICES=/dev/dri/card1
+ExecStartPre=/bin/sh -c "install -d -o kiosk -g kiosk -m 0700 /run/user/1000 /var/cache/c60-kiosk /var/lib/c60-kiosk || true"
+ExecStart=/bin/sh -c "exec /usr/bin/cage -s -- /usr/bin/cog ${COG_OPTS} \"${KIOSK_URL:-https://example.com/}\""
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=graphical.target

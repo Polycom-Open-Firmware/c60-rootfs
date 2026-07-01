@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>C60 Touch Test</title>
+<style>
+  html,body { margin:0; height:100%; background:#0b0d10; color:#e6e6e6;
+    font:16px/1.4 system-ui,sans-serif; overflow:hidden; touch-action:none; user-select:none; }
+  #c { position:fixed; inset:0; display:block; }
+  #hud { position:fixed; top:12px; left:12px; right:12px; pointer-events:none;
+    font-family:ui-monospace,monospace; font-size:18px; text-shadow:0 1px 2px #000; }
+  #hud b { color:#4ade80; }
+  #big { position:fixed; top:50%; left:0; right:0; transform:translateY(-50%);
+    text-align:center; color:#2a2f38; font-size:7vw; font-weight:700; pointer-events:none; }
+  .k { color:#9aa4b2; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="big">C60 TOUCH TEST</div>
+<div id="hud">
+  <div><span class="k">touches:</span> <b id="count">0</b>
+       &nbsp; <span class="k">active:</span> <b id="active">0</b></div>
+  <div><span class="k">last:</span> <b id="last">—</b></div>
+  <div class="k" id="dev">pointer/touch events</div>
+</div>
+<script>
+const c = document.getElementById("c"), ctx = c.getContext("2d");
+const elCount = document.getElementById("count"), elActive = document.getElementById("active"),
+      elLast = document.getElementById("last");
+let count = 0, active = new Map(), W = 0, H = 0;
+
+function resize(){ W = c.width = innerWidth * devicePixelRatio; H = c.height = innerHeight * devicePixelRatio;
+  c.style.width = innerWidth+"px"; c.style.height = innerHeight+"px"; }
+addEventListener("resize", resize); resize();
+
+// fade the trail each frame so paths are visible but not permanent
+function fade(){ ctx.fillStyle = "rgba(11,13,16,0.06)"; ctx.fillRect(0,0,W,H); requestAnimationFrame(fade); }
+fade();
+
+function colorFor(id){ const h = (id*67) % 360; return `hsl(${h} 90% 60%)`; }
+function dot(x, y, id, r){
+  const px = x*devicePixelRatio, py = y*devicePixelRatio;
+  ctx.fillStyle = colorFor(id);
+  ctx.beginPath(); ctx.arc(px, py, r*devicePixelRatio, 0, 7); ctx.fill();
+}
+function show(x, y){ elLast.textContent = Math.round(x)+", "+Math.round(y); }
+
+addEventListener("pointerdown", e => {
+  count++; elCount.textContent = count; active.set(e.pointerId, 1); elActive.textContent = active.size;
+  dot(e.clientX, e.clientY, e.pointerId, 26); show(e.clientX, e.clientY);
+}, {passive:false});
+addEventListener("pointermove", e => {
+  if (!active.has(e.pointerId)) return;
+  dot(e.clientX, e.clientY, e.pointerId, 12); show(e.clientX, e.clientY);
+}, {passive:false});
+function up(e){ active.delete(e.pointerId); elActive.textContent = active.size; }
+addEventListener("pointerup", up); addEventListener("pointercancel", up);
+
+// Fallback: raw touch events (in case pointer events are unavailable)
+addEventListener("touchstart", e => {
+  for (const t of e.changedTouches){ count++; dot(t.clientX, t.clientY, t.identifier+1000, 26); show(t.clientX,t.clientY); }
+  elCount.textContent = count; e.preventDefault();
+}, {passive:false});
+addEventListener("touchmove", e => {
+  for (const t of e.changedTouches) dot(t.clientX, t.clientY, t.identifier+1000, 12);
+  e.preventDefault();
+}, {passive:false});
+</script>
+</body>
+</html>
