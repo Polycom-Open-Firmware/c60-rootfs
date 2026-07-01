@@ -1,0 +1,18 @@
+[Match]
+Name=lan
+
+[Network]
+DHCP=ipv4
+LinkLocalAddressing=ipv6
+DNS=1.1.1.1
+DNS=8.8.8.8
+# Drop the cached lease on carrier loss so that regaining the link forces
+# a fresh DHCP request instead of silently renewing the previous
+# network's lease.
+IgnoreCarrierLoss=no
+KeepConfiguration=no
+
+[DHCPv4]
+UseDNS=true
+UseHostname=false
+SendRelease=yes

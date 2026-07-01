@@ -1,0 +1,8 @@
+work/
+out/*
+!out/.gitkeep
+*.tar.gz
+*.cpio.gz
+ssh-keys/
+authorized_keys
+root_password

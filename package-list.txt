@@ -1,0 +1,55 @@
+# C60 slim rootfs package list.
+# One package per line. Blank lines and # comments ignored.
+# Installed inside the chroot with `apt-get install --no-install-recommends`.
+
+# init / base
+systemd
+systemd-sysv
+systemd-resolved
+systemd-timesyncd
+udev
+dbus
+libnss-systemd
+
+# networking
+iproute2
+iputils-ping
+isc-dhcp-client
+openssh-server
+
+# wayland kiosk: compositor + browser
+cage
+cog
+libwpebackend-fdo-1.0-1
+libwpewebkit-1.1-0
+libwpe-1.0-1
+xwayland
+
+# input / display / GPU
+seatd
+libinput-bin
+libegl1
+libgles2
+mesa-utils
+
+# minimal utils
+util-linux
+psmisc
+procps
+less
+curl
+ca-certificates
+busybox-static
+
+# locales / clock polish
+locales
+fake-hwclock
+
+# u-boot environment tools (fw_printenv / fw_setenv) for reading and
+# editing the u-boot env from running Linux via /etc/fw_env.config
+# (written by chroot-setup.sh).
+u-boot-tools
+libubootenv-tool
+
+# C60-specific extra packages are added below as those features land on top
+# of the base kiosk; none are shipped yet.

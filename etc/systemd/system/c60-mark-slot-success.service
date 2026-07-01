@@ -1,0 +1,18 @@
+[Unit]
+Description=Mark NXP iMX8MM A/B slot A as successfully booted
+Documentation=file:///etc/systemd/system/c60-mark-slot-success.pl
+After=local-fs.target
+ConditionPathExists=/dev/disk/by-partlabel/misc
+
+[Service]
+Type=oneshot
+RemainAfterExit=no
+ExecStart=/usr/bin/perl /etc/systemd/system/c60-mark-slot-success.pl
+# Service always exits 0 — script logs to journal on any failure so a bad
+# misc partition doesn't keep the panel out of multi-user.
+SuccessExitStatus=0
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

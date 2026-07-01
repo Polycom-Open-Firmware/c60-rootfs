@@ -1,0 +1,18 @@
+[Unit]
+Description=Apply MAC from androidboot.ethmacaddr= cmdline to FEC + DSA lan port
+Documentation=file:///etc/systemd/system/c60-fec-mac-from-cmdline.sh
+DefaultDependencies=no
+After=systemd-udev-settle.service local-fs.target
+Before=network-pre.target systemd-networkd.service
+Wants=network-pre.target
+ConditionPathExists=/proc/cmdline
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/etc/systemd/system/c60-fec-mac-from-cmdline.sh
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=network-pre.target

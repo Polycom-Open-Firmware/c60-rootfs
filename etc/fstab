@@ -1,0 +1,6 @@
+# initramfs (or u-boot rootwait) mounts root rw; everything else is tmpfs.
+proc             /proc    proc    defaults                          0 0
+sys              /sys     sysfs   defaults                          0 0
+tmpfs            /tmp     tmpfs   defaults,nosuid,nodev,size=64M    0 0
+tmpfs            /run     tmpfs   defaults,nosuid,nodev,mode=755    0 0
+tmpfs            /var/log tmpfs   defaults,nosuid,nodev,size=32M    0 0
