@@ -125,14 +125,23 @@ if [[ -d "$FW_SRC" ]]; then
     echo "==> staging WiFi + SDMA firmware blobs into /lib/firmware"
     install -d -m 0755 "$ROOTFS/lib/firmware/brcm" "$ROOTFS/lib/firmware/imx/sdma"
     for blob in brcmfmac4356-pcie.bin brcmfmac4356-pcie.clm_blob brcmfmac4356-pcie.txt; do
-        [[ -f "$FW_SRC/$blob" ]] && install -m 0644 "$FW_SRC/$blob" "$ROOTFS/lib/firmware/brcm/$blob"
+        [[ -f "$FW_SRC/brcm/$blob" ]] && install -m 0644 "$FW_SRC/brcm/$blob" "$ROOTFS/lib/firmware/brcm/$blob"
     done
     # brcmfmac derives the NVRAM name from the root compatible ("poly,kepler-proto1")
     # and requests brcmfmac4356-pcie.poly,kepler-proto1.txt first; without that exact
     # name the chip comes up without board cal and an iw scan hard-hangs the SoC.
     # Same content as the generic .txt, staged under the board-specific name.
-    [[ -f "$FW_SRC/brcmfmac4356-pcie.txt" ]] && install -m 0644 "$FW_SRC/brcmfmac4356-pcie.txt" "$ROOTFS/lib/firmware/brcm/brcmfmac4356-pcie.poly,kepler-proto1.txt"
+    [[ -f "$FW_SRC/brcm/brcmfmac4356-pcie.txt" ]] && install -m 0644 "$FW_SRC/brcm/brcmfmac4356-pcie.txt" "$ROOTFS/lib/firmware/brcm/brcmfmac4356-pcie.poly,kepler-proto1.txt"
     [[ -f "$FW_SRC/sdma-imx7d.bin" ]] && install -m 0644 "$FW_SRC/sdma-imx7d.bin" "$ROOTFS/lib/firmware/imx/sdma/sdma-imx7d.bin"
+    # Bluetooth patchram for the BCM4356 / CYW4354A2 combo. Unlike the WiFi
+    # blobs this is not embedded via CONFIG_EXTRA_FIRMWARE, so hci_bcm loads it
+    # from the rootfs at runtime. The driver derives the request name from the
+    # chip's LMP subver and asks for brcm/<name>.hcd (BCM4356A2.hcd for subver
+    # 0x230f, BCM4354.hcd for 0x610c); the recovered patch is staged under each
+    # candidate name so the load matches whichever the silicon reports.
+    for hcd in BCM4356A2.hcd BCM4354.hcd BCM4354A2.hcd; do
+        [[ -f "$FW_SRC/brcm/$hcd" ]] && install -m 0644 "$FW_SRC/brcm/$hcd" "$ROOTFS/lib/firmware/brcm/$hcd"
+    done
 fi
 
 # 5. Version stamp.
