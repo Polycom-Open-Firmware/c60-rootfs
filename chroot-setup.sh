@@ -116,11 +116,20 @@ systemctl set-default graphical.target
 #   c60-mark-slot-success.service: marks A/B slot A successful_boot=1 so
 #     u-boot stops decrementing tries_remaining and we don't fall back
 #     to stock slot B. Runs after multi-user.target reached.
-#   c60-fec-mac-from-cmdline.service: applies androidboot.ethmacaddr=
-#     from /proc/cmdline to end0 + lan so the FEC MAC is deterministic
-#     across reboots. Runs Before=network-pre.target.
+#   c60-wired-mac.service: provisions a stable, universally-administered
+#     Polycom-OUI (00:04:f2) wired MAC on end0/lan/pc. Prefers
+#     androidboot.ethmacaddr= from /proc/cmdline (emitted by polycom-uboot's
+#     preboot); otherwise derives it per-unit from the immutable i.MX8MM OCOTP
+#     SoC unique-id. Runs Before=network-pre.target so DHCP uses it. (The proto
+#     has no factory FEC MAC fuse -> the kernel would otherwise pick a fresh
+#     random MAC every boot.)
+#   c60-bt-addr.service: same idea for the Bluetooth controller public BD_ADDR
+#     (applied via btmgmt). Prefers androidboot.btmacaddr= else derived
+#     (wired MAC + 1 in the last octet). Without it hci0 keeps the shared
+#     CYW4354A2.1CX.hcd firmware default 43:54:A2:00:1F:AC.
 systemctl enable c60-mark-slot-success.service
-systemctl enable c60-fec-mac-from-cmdline.service
+systemctl enable c60-wired-mac.service
+systemctl enable c60-bt-addr.service
 
 # SSH host keys.
 ssh-keygen -A

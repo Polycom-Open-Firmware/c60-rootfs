@@ -1,0 +1,16 @@
+[Unit]
+Description=Provision stable Polycom-OUI wired MAC (end0/lan/pc) from SoC UID
+Documentation=man:c60-hwaddr
+# Run before systemd-networkd configures the DSA ports so the interfaces come
+# up (and DHCP) with the stable Polycom MAC, not the kernel's random one.
+Wants=network-pre.target
+Before=network-pre.target
+ConditionPathExists=/sys/devices/soc0/serial_number
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/c60-hwaddr.sh net
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,16 @@
+[Unit]
+Description=Provision stable Polycom-OUI Bluetooth BD_ADDR from SoC UID
+Documentation=man:c60-hwaddr
+# hci_bcm brings hci0 up with the CYW4354A2.1CX.hcd default 43:54:A2:00:1F:AC;
+# reprogram the controller's public address (btmgmt) with the derived value.
+After=bluetooth.service
+Wants=bluetooth.service
+ConditionPathExists=/sys/devices/soc0/serial_number
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/c60-hwaddr.sh bt
+
+[Install]
+WantedBy=multi-user.target
