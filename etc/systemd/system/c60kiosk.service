@@ -1,0 +1,25 @@
+[Unit]
+Description=C60 cage+cog Wayland kiosk (TC8 touch test)
+After=seatd.service systemd-user-sessions.service
+Wants=seatd.service
+ConditionPathExists=/dev/dri/card1
+
+[Service]
+Type=simple
+User=kiosk
+Group=kiosk
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=WLR_DRM_DEVICES=/dev/dri/card1
+Environment=WLR_RENDER_DRM_DEVICE=/dev/dri/renderD128
+Environment=LIBSEAT_BACKEND=seatd
+Environment=XDG_SEAT=seat0
+Environment=COG_PLATFORM_FDO_VIEW_FULLSCREEN=1
+Environment=HOME=/home/kiosk
+Environment=WLR_RENDERER_ALLOW_SOFTWARE=1
+ExecStartPre=+/bin/sh -c 'install -d -o kiosk -g kiosk -m 0700 /run/user/1000'
+ExecStart=/usr/local/bin/c60kiosk.sh 0
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

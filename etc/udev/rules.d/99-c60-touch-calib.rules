@@ -1,0 +1,1 @@
+SUBSYSTEM=="input", KERNEL=="event*", ATTRS{name}=="generic ft5x06*", ENV{LIBINPUT_CALIBRATION_MATRIX}="-1 0 1 0 -1 1"

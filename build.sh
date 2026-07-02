@@ -15,7 +15,7 @@
 #                  rsync, tar, gzip.
 #
 # Re-runs idempotently: if work/rootfs already exists with /etc/debian_version,
-# skips debootstrap and re-applies the chroot-setup + etc/ overlay.
+# skips debootstrap and re-applies the chroot-setup + etc/ and usr/ overlays.
 
 set -euo pipefail
 
@@ -110,9 +110,14 @@ PermitRootLogin yes
 PasswordAuthentication yes
 EOF
 
-# 4. etc/ overlay (network config, fstab, etc).
-echo "==> applying etc/ overlay"
+# 4. etc/ + usr/ overlay. etc/: network config, fstab, systemd units, udev
+# rules. usr/: the c60kiosk launcher (usr/local/bin), the MAC/BT hwaddr helper
+# invoked by c60-wired-mac/c60-bt-addr (usr/local/sbin), and the ALSA UCM2
+# profiles (usr/share/alsa). Both trees must be copied or those units point at
+# scripts/assets that aren't in the image.
+echo "==> applying etc/ + usr/ overlay"
 rsync -a "$ROOT_DIR/etc/" "$ROOTFS/etc/"
+[ -d "$ROOT_DIR/usr" ] && rsync -a "$ROOT_DIR/usr/" "$ROOTFS/usr/"
 
 # 4b. WiFi firmware (BCM4356 + companion blobs) into /lib/firmware/brcm/.
 # Mirrors what kernel-side CONFIG_EXTRA_FIRMWARE already embeds — having

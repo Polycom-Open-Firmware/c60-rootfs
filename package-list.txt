@@ -27,10 +27,29 @@ xwayland
 
 # input / display / GPU
 seatd
+libseat1
 libinput-bin
+libinput10
 libegl1
 libgles2
 mesa-utils
+# Mesa DRI drivers (etnaviv_dri.so for the Vivante GC520 + kms_swrast fallback)
+# and the Mesa EGL/GLX vendor libs are Recommends of libegl1/libglx0, so they
+# are DROPPED by --no-install-recommends. List them explicitly or wlroots/cage
+# GL init fails on boot and the kiosk never comes up.
+libgl1-mesa-dri
+libegl-mesa0
+libglx-mesa0
+libgbm1
+# wayland client/server libs — hard-deps of cage/cog, pinned explicitly so the
+# kiosk stack is self-contained and auditable.
+libwayland-client0
+libwayland-server0
+libwayland-cursor0
+libwayland-egl1
+# shared MIME database: without it WPE/GIO detects file:///*.html as text/plain
+# and the panel shows raw HTML source instead of the rendered touch-test page.
+shared-mime-info
 
 # minimal utils
 util-linux

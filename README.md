@@ -82,11 +82,16 @@ non-`en` locales stripped via `dpkg path-exclude`.
 
 Per-build defaults live in `etc/`:
 
-- `etc/default/c60-kiosk` — `KIOSK_URL` (defaults to the bundled
-  `etc/c60-kiosk/touchtest.html`) plus cage/cog options
-- `etc/systemd/system/{kiosk,kiosk-config,kiosk-vt}.service` — the
-  cage-on-tty7 kiosk, a oneshot that applies a per-device override from
-  `/data/poly-kiosk/config` if present, and an explicit `chvt 7` helper
+- `etc/systemd/system/c60kiosk.service` + `usr/local/bin/c60kiosk.sh` —
+  the cage + cog kiosk. Runs as the `kiosk` user under `seatd` (no VT /
+  logind session), scans out on the DSI panel
+  (`WLR_DRM_DEVICES=/dev/dri/card1`) and renders GL on the Vivante GC520
+  (`WLR_RENDER_DRM_DEVICE=/dev/dri/renderD128`), fullscreen-showing
+  `etc/tc8-kiosk/touchtest.html`
+- `etc/tc8-kiosk/touchtest.html` — the bundled multi-touch test page
+- `etc/udev/rules.d/99-c60-touch-calib.rules` — libinput calibration
+  matrix (`-1 0 1 0 -1 1`) that flips the ft5x06 touch X+Y to match the
+  panel mount (rootfs-only; no device-tree touch invert)
 - `etc/udev/rules.d/{50-drm,70-seat}.rules` — give the `kiosk` user
   group access to `/dev/dri/*` and seat-tag `/dev/input/event*` so
   libinput finds the touchscreen
@@ -94,10 +99,6 @@ Per-build defaults live in `etc/`:
 - `etc/systemd/system/c60-mark-slot-success.*` and
   `etc/systemd/system/c60-fec-mac-from-cmdline.*` — the C60 boot-control
   and FEC-MAC units described above
-
-Per-device overrides are intended to live at `/data/poly-kiosk/config`
-(an optional persistence location, populated separately during
-deployment); `kiosk-config.service` reads it at boot if present.
 
 ## C60-specific extras
 
@@ -115,11 +116,6 @@ repo.
 
 ## Known limitations
 
-- The C60's DSI panel is `status="disabled"` in the device tree
-  (mainline samsung-dsim bring-up is pending), so no KMS display node is
-  active yet and the kiosk has nothing to render to.  The rootfs is
-  still structured as a kiosk: once the panel is enabled, the display
-  DRM node and panel rotation are wired up in `kiosk.service`.
 - SSH host keys are per-build, not per-device (see above).
 
 ## Licensing
