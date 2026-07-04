@@ -71,7 +71,7 @@ out/                # build output (gitignored)
   xwayland (cage hard-requires it)
 - GPU + input: seatd, libinput-bin, libegl1, libgles2, mesa-utils
 - Minimal utils: util-linux, psmisc, procps, less, curl, ca-certificates,
-  busybox-static
+  busybox-static, python3
 - Locale/clock polish: locales, fake-hwclock
 - u-boot env editing from running Linux: u-boot-tools, libubootenv-tool
 
@@ -105,8 +105,9 @@ Per-build defaults live in `etc/`:
 The rootfs is structured as a kiosk with headroom for C60-specific
 features layered on top of the base Cage/Cog stack.  Extra packages go
 in `package-list.txt`, extra config in the `etc/` overlay, and extra
-units in `etc/systemd/system/` enabled from `chroot-setup.sh`.  None are
-shipped yet.
+units in `etc/systemd/system/` enabled from `chroot-setup.sh`. Python 3 is
+included in the released image for on-device diagnostics and local service
+helpers.
 
 ## SSH host keys
 

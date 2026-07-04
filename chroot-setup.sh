@@ -114,6 +114,7 @@ systemctl enable systemd-timesyncd
 # The older TC8-style kiosk.service / kiosk-vt / kiosk-config units were retired
 # in favor of this seatd-only, VT-less unit.
 systemctl enable seatd.service
+systemctl enable c60-input-status.service
 systemctl enable c60kiosk.service
 systemctl set-default multi-user.target
 

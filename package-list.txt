@@ -70,5 +70,5 @@ fake-hwclock
 u-boot-tools
 libubootenv-tool
 
-# C60-specific extra packages are added below as those features land on top
-# of the base kiosk; none are shipped yet.
+# C60-specific extras
+python3
