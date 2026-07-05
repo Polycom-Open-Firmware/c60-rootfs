@@ -4,4 +4,4 @@
 ROT=""
 i=0
 while [ "$i" -lt "${1:-0}" ]; do ROT="$ROT -r"; i=$((i+1)); done
-exec /usr/bin/cage $ROT -s -- /usr/bin/cog --enable-media=true http://127.0.0.1:8080/
+exec /usr/bin/cage $ROT -s -- /usr/bin/cog ${COG_OPTS:---enable-media=true} "${KIOSK_URL:-file:///etc/kiosk/splash.html}"

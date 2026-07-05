@@ -1,0 +1,13 @@
+[Unit]
+Description=Apply C60 config blob pushed to the misc partition
+Documentation=file:///etc/c60-config/apply-config.sh
+After=local-fs.target
+Before=systemd-networkd.service wpa_supplicant@wlan0.service c60kiosk.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/etc/c60-config/apply-config.sh
+
+[Install]
+WantedBy=multi-user.target

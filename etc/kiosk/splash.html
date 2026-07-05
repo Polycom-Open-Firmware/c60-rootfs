@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>C60 Setup</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#05070d;color:#f8fbff;font:22px/1.35 system-ui,sans-serif;touch-action:none;user-select:none;}
+body{display:grid;place-items:center;background:radial-gradient(circle at 50% 18%,#1d3558 0,#0d1728 38%,#05070d 80%);}
+.card{width:min(86vw,980px);min-height:72vh;box-sizing:border-box;padding:64px;border:1px solid #ffffff22;border-radius:42px;background:linear-gradient(145deg,#ffffff18,#ffffff08);box-shadow:0 38px 100px #000b,inset 0 1px 0 #fff3;display:grid;align-items:center;position:relative;z-index:1;}
+.eyebrow{color:#8fe1ff;text-transform:uppercase;letter-spacing:.22em;font-weight:800;font-size:15px;margin-bottom:18px}.title{font-size:76px;line-height:.95;font-weight:900;letter-spacing:-.055em;margin:0 0 24px}.copy{font-size:29px;color:#d7e6f8;max-width:700px}.url{margin-top:34px;padding:18px 22px;border-radius:18px;background:#0008;color:#aee8ff;font:28px/1.2 ui-monospace,monospace;word-break:break-all}.touch-layer{position:fixed;inset:0;z-index:5;pointer-events:none}.dot{position:absolute;width:72px;height:72px;margin:-36px 0 0 -36px;border:4px solid #fff;border-radius:999px;background:#64d7ff22;box-shadow:0 0 28px #7ce7ff,0 0 80px #7ce7ff66;animation:pulse .65s ease-out forwards}.dot:after{content:"";position:absolute;inset:17px;border-radius:999px;background:#fff}@keyframes pulse{from{transform:scale(.55);opacity:1}to{transform:scale(1.55);opacity:0}}.status{position:fixed;left:28px;bottom:22px;color:#7f91aa;font:16px ui-monospace,monospace;z-index:2}@media(max-width:760px){.card{padding:32px}.title{font-size:46px}.copy{font-size:20px}.url{font-size:19px}}
+</style>
+</head>
+<body>
+<main class="card">
+  <section>
+    <div class="eyebrow">Polycom C60 Open Firmware</div>
+    <h1 class="title">Configure this device</h1>
+    <div class="copy">Open the configurator on a phone or laptop to finish setup.</div>
+    <div class="url">https://wizard.openpolycom.cc/</div>
+  </section>
+</main>
+<div class="status" id="status">touches: 0</div>
+<div class="touch-layer" id="touches"></div>
+<script>
+const layer=document.getElementById('touches'), status=document.getElementById('status');
+function dot(x,y){const d=document.createElement('div');d.className='dot';d.style.left=x+'px';d.style.top=y+'px';layer.appendChild(d);setTimeout(()=>d.remove(),700)}
+function touchCount(n){status.textContent='touches: '+n}
+addEventListener('pointerdown',e=>{dot(e.clientX,e.clientY);touchCount(1)});
+addEventListener('pointermove',e=>{if(e.buttons||e.pointerType==='touch')dot(e.clientX,e.clientY)});
+addEventListener('pointerup',()=>touchCount(0));
+addEventListener('pointercancel',()=>touchCount(0));
+addEventListener('touchstart',e=>{touchCount(e.touches.length);for(const t of e.changedTouches)dot(t.clientX,t.clientY)},{passive:true});
+addEventListener('touchmove',e=>{touchCount(e.touches.length);for(const t of e.changedTouches)dot(t.clientX,t.clientY)},{passive:true});
+addEventListener('touchend',e=>touchCount(e.touches.length),{passive:true});
+addEventListener('touchcancel',e=>touchCount(e.touches.length),{passive:true});
+</script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+KIOSK_URL=file:///etc/kiosk/splash.html
+COG_OPTS="--enable-media=true"

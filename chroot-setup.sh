@@ -103,18 +103,19 @@ systemctl enable wipe-networkd-leases.service
 systemctl enable systemd-networkd
 systemctl enable systemd-resolved
 systemctl enable systemd-timesyncd
+chmod 0755 /etc/c60-config/apply-config.sh 2>/dev/null || true
+systemctl enable c60-config.service
 
 # Wayland/Cage kiosk (verified v0.1.8 bring-up): seatd provides the seat --
 # it opens the DRM/input devices as root (started with `-g video`, so the
 # kiosk user in the video group can drive the /run/seatd.sock) -- and
 # c60kiosk.service runs cage + cog fullscreen on the DSI panel (WLR_DRM_DEVICES
 # =card1 scanout, WLR_RENDER_DRM_DEVICE=renderD128 etnaviv GC520 GL) showing
-# /etc/tc8-kiosk/touchtest.html. The ft5x06 touch X+Y flip ships as the
+# ${KIOSK_URL:-file:///etc/kiosk/splash.html}. The ft5x06 touch X+Y flip ships as the
 # 99-c60-touch-calib.rules udev calibration matrix (rootfs-only; no DT invert).
 # The older TC8-style kiosk.service / kiosk-vt / kiosk-config units were retired
 # in favor of this seatd-only, VT-less unit.
 systemctl enable seatd.service
-systemctl enable c60-input-status.service
 systemctl enable c60kiosk.service
 systemctl set-default multi-user.target
 

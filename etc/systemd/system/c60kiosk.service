@@ -1,13 +1,14 @@
 [Unit]
-Description=C60 cage+cog Wayland kiosk (TC8 touch test)
-After=seatd.service systemd-user-sessions.service c60-input-status.service
-Wants=seatd.service c60-input-status.service
+Description=C60 cage+cog Wayland setup splash kiosk
+After=seatd.service systemd-user-sessions.service
+Wants=seatd.service
 ConditionPathExists=/dev/dri/card1
 
 [Service]
 Type=simple
 User=kiosk
 Group=kiosk
+EnvironmentFile=-/etc/default/c60-kiosk
 Environment=XDG_RUNTIME_DIR=/run/user/1000
 Environment=WLR_DRM_DEVICES=/dev/dri/card1
 Environment=WLR_RENDER_DRM_DEVICE=/dev/dri/renderD128
