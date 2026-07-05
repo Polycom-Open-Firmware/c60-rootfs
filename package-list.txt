@@ -16,6 +16,10 @@ iproute2
 iputils-ping
 isc-dhcp-client
 openssh-server
+wpasupplicant
+iw
+wireless-regdb
+bluez
 
 # wayland kiosk: compositor + browser
 cage
@@ -71,4 +75,6 @@ u-boot-tools
 libubootenv-tool
 
 # C60-specific extras
+alsa-utils
+ffmpeg
 python3

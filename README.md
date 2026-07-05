@@ -74,6 +74,8 @@ out/                # build output (gitignored)
   busybox-static, python3
 - Locale/clock polish: locales, fake-hwclock
 - u-boot env editing from running Linux: u-boot-tools, libubootenv-tool
+- Audio tools: alsa-utils (`aplay`, `arecord`, `speaker-test`, `amixer`,
+  `alsaucm`) and ffmpeg for decoding compressed audio formats into ALSA
 
 `--no-install-recommends` everywhere; `/usr/share/doc`, `/usr/share/man`,
 non-`en` locales stripped via `dpkg path-exclude`.
@@ -108,6 +110,10 @@ in `package-list.txt`, extra config in the `etc/` overlay, and extra
 units in `etc/systemd/system/` enabled from `chroot-setup.sh`. Python 3 is
 included in the released image for on-device diagnostics and local service
 helpers.
+
+Audio is exposed through the ALSA card `keplerc60`. See `AUDIO.md` for
+the hardware topology, PCM names, playback examples, capture examples, and
+troubleshooting commands.
 
 ## SSH host keys
 
