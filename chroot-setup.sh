@@ -137,6 +137,7 @@ systemctl set-default multi-user.target
 systemctl enable c60-mark-slot-success.service
 systemctl enable c60-wired-mac.service
 systemctl enable c60-bt-addr.service
+systemctl disable wpa_supplicant.service 2>/dev/null || true
 
 # SSH host keys.
 ssh-keygen -A

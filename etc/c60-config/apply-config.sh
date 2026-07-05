@@ -32,8 +32,16 @@ fi
 log "valid config blob: $len bytes"
 
 KIOSK=${C60_CFG_KIOSK:-/etc/default/c60-kiosk}
-WPA_CONF=${C60_CFG_WPA_CONF:-/etc/wpa_supplicant/wpa_supplicant-wlan0.conf}
-WLAN_NET=${C60_CFG_WLAN_NET:-/etc/systemd/network/25-wlan0.network}
+WIFI_IFACE=${C60_CFG_WIFI_IFACE:-}
+if [ -z "$WIFI_IFACE" ]; then
+	for p in /sys/class/net/wl* /sys/class/net/wlan*; do
+		[ -e "$p" ] || continue
+		WIFI_IFACE=$(basename "$p")
+		break
+	done
+fi
+WPA_CONF=${C60_CFG_WPA_CONF:-/etc/wpa_supplicant/wpa_supplicant-${WIFI_IFACE:-wlp1s0}.conf}
+WLAN_NET=${C60_CFG_WLAN_NET:-/etc/systemd/network/25-wifi.network}
 
 set_kv() {
 	_f=$1; _k=$2; _v=$3
@@ -56,6 +64,7 @@ wifi_escape() {
 apply_wifi() {
 	[ -n "${wifi_ssid+x}" ] || return 0
 	[ -n "$wifi_ssid" ] || { log "empty WIFI_SSID -- skipping wifi config"; return 0; }
+	[ -n "$WIFI_IFACE" ] || { log "no wifi interface -- skipping wifi config"; return 0; }
 
 	install -d -m 0755 "$(dirname "$WPA_CONF")" "$(dirname "$WLAN_NET")"
 	{
@@ -76,17 +85,18 @@ apply_wifi() {
 
 	cat > "$WLAN_NET" <<'EOF'
 [Match]
-Name=wlan0
+Name=wl* wlan*
 
 [Network]
 DHCP=yes
 EOF
 
 	if command -v systemctl >/dev/null 2>&1; then
-		systemctl enable wpa_supplicant@wlan0.service >/dev/null 2>&1 || true
-		systemctl restart wpa_supplicant@wlan0.service systemd-networkd.service >/dev/null 2>&1 || true
+		systemctl disable --now wpa_supplicant.service >/dev/null 2>&1 || true
+		systemctl enable "wpa_supplicant@${WIFI_IFACE}.service" >/dev/null 2>&1 || true
+		systemctl restart "wpa_supplicant@${WIFI_IFACE}.service" systemd-networkd.service >/dev/null 2>&1 || true
 	fi
-	log "configured wifi"
+	log "configured wifi on $WIFI_IFACE"
 }
 
 while IFS= read -r line || [ -n "$line" ]; do
