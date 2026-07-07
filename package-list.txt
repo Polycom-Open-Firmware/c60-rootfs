@@ -57,6 +57,7 @@ shared-mime-info
 
 # minimal utils
 util-linux
+e2fsprogs
 psmisc
 procps
 less

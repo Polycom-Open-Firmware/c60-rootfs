@@ -1,0 +1,14 @@
+[Unit]
+Description=C60 headless USB CDC-ECM network gadget (OTG)
+After=sysinit.target
+Before=network-pre.target
+Wants=network-pre.target
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/c60-usbnet-gadget.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -1,7 +1,7 @@
 [Unit]
 Description=Apply C60 config blob pushed to the misc partition
 Documentation=file:///etc/c60-config/apply-config.sh
-After=local-fs.target
+After=local-fs.target c60-persist-root.service
 Before=systemd-networkd.service c60kiosk.service
 
 [Service]

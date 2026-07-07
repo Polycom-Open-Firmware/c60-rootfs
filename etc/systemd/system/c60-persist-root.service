@@ -1,0 +1,13 @@
+[Unit]
+Description=Bind persistent userdata storage onto /root
+Documentation=file:///usr/local/sbin/c60-persist-root.sh
+After=local-fs.target systemd-udev-settle.service
+Before=c60-config.service ssh.service c60kiosk.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/c60-persist-root.sh
+
+[Install]
+WantedBy=multi-user.target
