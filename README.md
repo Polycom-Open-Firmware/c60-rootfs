@@ -1,5 +1,10 @@
 # c60-rootfs
 
+> **Superseded.** The C60 rootfs now builds from the converged
+> [poly-rootfs](https://github.com/Polycom-Open-Firmware/poly-rootfs)
+> (`--device=c60`), driven by `poly-firmware-build --target=c60`. This repo
+> is kept as the C60 bring-up reference.
+
 Builds the slim Debian bookworm arm64 **Wayland/Cage kiosk** rootfs for
 the **Polycom Trio C60** conference device (i.MX 8M Mini Quad, codename
 `kepler_proto1`).
@@ -12,7 +17,7 @@ the rootfs into the raw ext4 `rootfs.img` flashed to `system_a`.
 
 The C60 is a touch device, so the rootfs boots straight into a
 fullscreen kiosk: the Cage compositor running the Cog/WPE WebKit browser
-on the DRM/KMS console — the same Wayland/Cage model as `tc8-rootfs` —
+on the DRM/KMS console — the same Wayland/Cage model as the TC8 rootfs (now `poly-rootfs`) —
 plus the C60-specific boot-control and networking units.  Room is left
 for C60-specific extra features on top of the base kiosk (see
 [C60-specific extras](#c60-specific-extras)).
